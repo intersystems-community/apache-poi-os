@@ -26,6 +26,9 @@ Method %OnNew(list As %ListOfDataTypes) As %Status [ Private, ServerOnly = 1 ]
 		// replace $c(0) with empty elements
 		set value = $replace(value, $lb($c(0)), $lb())
 		
+		// Make $lb lists
+		set value = $lfs(value, $c(1))
+		
 		// TODO java-side set casted values
 		// TODO dates
 		if $listvalid(value) {

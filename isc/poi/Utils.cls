@@ -59,20 +59,20 @@ ClassMethod updateJar(gatewayName = {..#GATEWAY}, path As %String = {..getPath()
 	set sc = ##class(%Net.Remote.Service).StopGateway(gatewayName)
 	
 	set result = 0
-	set:$system["ed-pc" sc = ##class(%File).CopyFile(..#BUILDCLASSPATH,..#DIR _ $lg(..#LIBS), $$$YES, .result)
+	/*set:$system["ed-pc" sc = ##class(%File).CopyFile(..#BUILDCLASSPATH,..#DIR _ $lg(..#LIBS), $$$YES, .result)
 	if result=-32 {
 		hang 1
 		set sc = ##class(%File).CopyFile(..#BUILDCLASSPATH,..#DIR _ $lg(..#LIBS), $$$YES, .result)
 	}
 	
-	quit:sc'=1 $$$ERROR($$$GeneralError, $$$FormatText("File copy failed with error: %1", result))
+	quit:sc'=1 $$$ERROR($$$GeneralError, $$$FormatText("File copy failed with error: %1", result))*/
 	
 	#dim gateway As %Net.Remote.Gateway
 	set gateway = ..connect(gatewayName, path, .sc)
 	quit:$$$ISERR(sc) sc
 	
 	set sc = gateway.%Import(..#CLASS)
-	set:$system["ed-pc" sc = gateway.%Import(..#CLASSTEST)
+	//set:$system["ed-pc" sc = gateway.%Import(..#CLASSTEST)
 	quit:$$$ISERR(sc) sc
 	set:'##class(%Dictionary.CompiledClass).%ExistsId(..#CLASS) sc = $$$ERROR($$$GeneralError, $$$FormatText("Class '%1' does not exist",..#CLASS))
 	
