@@ -10,7 +10,7 @@ Parameter GATEWAY = "POI";
 
 /// Path to jar dir. Set with:
 /// set sc=$system.OBJ.UpdateConfigParam("isc.poi.Utils","DIR","C:\InterSystems\poi\")
-Parameter DIR As CONFIGVALUE;
+Parameter DIR = "C:\InterSystems\poi\";
 
 /// Library files to load
 /// poi.jar should be first
@@ -22,7 +22,7 @@ Parameter CLASSTEST = "isc.poi.Test";
 /// DEV tools.
 /// Path to built JAR. Set with:
 /// set sc=$system.OBJ.UpdateConfigParam("isc.poi.Utils","BUILDCLASSPATH","D:\Cache\POI\java\out\artifacts\java_jar\java.jar")
-Parameter BUILDCLASSPATH As CONFIGVALUE;
+Parameter BUILDCLASSPATH = "D:\Cache\POI\java\out\artifacts\java_jar\java.jar";
 
 /// Create JGW. Java home must point to 1.8 jre.
 /// Write $System.Status.GetErrorText(##class(isc.poi.Utils).createGateway())
@@ -102,6 +102,52 @@ ClassMethod getBook(file As %String, ByRef book As isc.poi.Book, debug As %Boole
         set start = $zh
         
         set list = ##class(isc.poi.Main).getBook(gateway, file)
+        
+        set end1 = $zh
+        set book = ##class(isc.poi.Book).%New(list) 
+		set end2 = $zh
+		
+		if debug {
+			write !,"JGW: ",end1-start
+			write !,"Instantiation: ",end2-end1
+			
+			//set exec = "set list = " _result
+			//XECUTE exec
+			//zwrite list
+	        //zwrite result
+	        //break
+		}
+
+        set sc = gateway.%Disconnect()
+
+    } catch ex {
+	    break:debug
+        set sc = $$$ADDSC(ex.AsStatus(), $g(%objlasterror))
+    }
+
+    quit sc
+}
+
+/// Load xlsx
+/// Write $System.Status.GetErrorText(##class(isc.poi.Utils).getBookFromStream("D:\Cache\POI\Книга1.xlsx",.b))
+ClassMethod getBookFromStream(file As %String, ByRef book As isc.poi.Book, debug As %Boolean = {$$$NO}) As %Status
+{
+    #dim gateway as %Net.Remote.Gateway
+    #dim exception as %Exception.AbstractException
+
+    set sc = $$$OK
+    try {
+	    
+	    set xlsxFile = ##class(%Stream.FileBinary).%New()
+	    do xlsxFile.LinkToFile(file)
+	    
+	    set stream = ##class(%Stream.TmpBinary).%New()
+	    do stream.CopyFrom(xlsxFile)
+	    
+        set gateway = ..connect()
+        set start = $zh
+        
+        set list = ##class(isc.poi.Main).getBookFromStream(gateway, stream)
         
         set end1 = $zh
         set book = ##class(isc.poi.Book).%New(list) 
