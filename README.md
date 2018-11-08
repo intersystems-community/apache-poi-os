@@ -6,7 +6,7 @@ ObjectScript part for apache-poi integration. Allows reading xlsx.
 1. Download [latest release](https://github.com/intersystems-ru/apache-poi-os/releases) and import it into any namespace.
 2. Download [latest release](https://github.com/intersystems-ru/apache-poi/releases): poi archive and jar from [intersystems-ru/apache-poi repository](https://github.com/intersystems-ru/apache-poi/releases).
 3. Extract archive and copy `poi.jar` into one directory, later referenced as `<DIR-WITH-JARS>`. Caché should have access to this directory. 
-4. Execute: `set sc=$system.OBJ.UpdateConfigParam("isc.poi.Utils","DIR", ##class(%File).NormalizeDirectory("<DIR-WITH-JARS>"))`. Don't forget to check `sc` for errors.
+4. Execute: `set ^POI("DIR")=##class(%File).NormalizeDirectory("<DIR-WITH-JARS>")`
 5. Create Java Gateway: `Write $System.Status.GetErrorText(##class(isc.poi.Utils).createGateway(name, home, path, port))`, where:
    - `name` is a name of the Java Gateway, defaults to `POI`.
    - `home` path to Java 1.8 JRE. Defaults to `JAVA_HOME` environment variable.
@@ -17,4 +17,4 @@ ObjectScript part for apache-poi integration. Allows reading xlsx.
 
 # API 
 
-Excel books are loaded into `isc.poi.Book` objects. Check it for API documenttion.
+Excel books are loaded into `isc.poi.Book` objects. Check it for API documentation.
