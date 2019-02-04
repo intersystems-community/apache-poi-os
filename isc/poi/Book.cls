@@ -14,8 +14,15 @@ Property data As %List [ MultiDimensional ];
 Method %OnNew(list As %ListOfDataTypes) As %Status [ Private, ServerOnly = 1 ]
 {
 	quit:list.Count()=1 $$$ERROR($$$GeneralError, list.GetAt(1))
-	set ..info = list.GetAt(list.Count())
+	
+	set info = list.GetAt(list.Count())
+	set info = $lfs(info, $c(1,1))
+	for i=1:1:$ll(info) {
+		set $list(infoFinal, i) = $lfs($lg(info, i), $c(1))
+	}
+	set ..info = infoFinal
 	do list.RemoveAt(list.Count())
+	
 	merge ..data = list.Data
 	
 	
