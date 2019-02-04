@@ -38,16 +38,10 @@ Method %OnNew(list As %ListOfDataTypes) As %Status [ Private, ServerOnly = 1 ]
 		
 		// TODO java-side set casted values
 		// TODO dates
-		if $listvalid(value) {
-			for i=1:1:$ll(value) {
-				set elem = $lg(value, i)
-	        	set:$ISVALIDNUM(elem) $list(value, i) = +elem
-			} 
-		} else {
+		if '$listvalid(value) {
 			set ^isc.poi.Book1($i(^isc.poi.Book1))= value
 			set ^isc.poi.Book2($i(^isc.poi.Book2))= key
 		}
-		
 		
 		set ..data(key) = value
 	}	
