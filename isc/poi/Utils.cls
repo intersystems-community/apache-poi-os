@@ -91,7 +91,7 @@ ClassMethod connect(gatewayName As %String = {..#GATEWAY}, path As %String = {..
 }
 
 /// Load xlsx
-/// Write $System.Status.GetErrorText(##class(isc.poi.Utils).getBook("D:\Cache\POI\Книга1.xlsx",.b))
+/// Write $System.Status.GetErrorText(##class(isc.poi.Utils).getBook("C:\InterSystems\poi\Test.xlsx",.b))
 ClassMethod getBook(file As %String, Output book As isc.poi.Book, debug As %Boolean = {$$$NO}) As %Status
 {
     #dim gateway as %Net.Remote.Gateway
@@ -118,7 +118,7 @@ ClassMethod getBook(file As %String, Output book As isc.poi.Book, debug As %Bool
 
     } catch ex {
 	    break:debug
-        set sc = $$$ADDSC(ex.AsStatus(), $g(%objlasterror))
+        set sc = $$$ADDSC($g(%objlasterror), ex.AsStatus())
     }
 
     quit sc
@@ -144,7 +144,7 @@ ClassMethod getBookFromStream(file As %String, Output book As isc.poi.Book, debu
         set start = $zh
         
         set list = ##class(isc.poi.Main).getBookFromStream(gateway, stream)
-        
+        zw list
         set end1 = $zh
         set book = ##class(isc.poi.Book).%New(list) 
 		set end2 = $zh
@@ -160,11 +160,83 @@ ClassMethod getBookFromStream(file As %String, Output book As isc.poi.Book, debu
 
     } catch ex {
 	    break:debug
-        set sc = $$$ADDSC(ex.AsStatus(), $g(%objlasterror))
+        set sc = $$$ADDSC($g(%objlasterror), ex.AsStatus())
+    }
+
+    quit sc
+}
+
+/// Write $System.Status.GetErrorText(##class(isc.poi.Utils).getSheet("D:\Cache\POI\Книга1.xlsx",.b,1))
+ClassMethod getSheet(file As %String, ByRef book As isc.poi.Book, sheetNumber, debug As %Boolean = {$$$NO}) As %Status
+{
+    #dim gateway as %Net.Remote.Gateway
+    #dim exception as %Exception.AbstractException
+
+    set sc = $$$OK
+	try {
+		set gateway = ..connect()
+		set start = $zh
+		
+		#dim list As %ListOfDataTypes
+		set list = ##class(isc.poi.Main).getSheet(gateway, file, sheetNumber)
+		
+		do list.Insert($lb($lb(list.Count(), sheetNumber)))
+		
+		set end1 = $zh
+		set book = ##class(isc.poi.Book).%New(list) 
+		set end2 = $zh
+
+		if debug {
+			write !,"JGW: ",end1-start
+			write !,"Instantiation: ",end2-end1
+
+			//set exec = "set list = " _result
+			//XECUTE exec
+			//zwrite list
+			     //zwrite result
+			     //break
+		}
+
+		set sc = gateway.%Disconnect()
+		// do ##class(%Net.Remote.Service).StopGateway(..#GATEWAY)
+
+	} catch ex {
+	 	break:debug
+	    set sc = $$$ADDSC($g(%objlasterror), ex.AsStatus())
+	}
+
+	    quit sc
+}
+
+/// Write xlsx
+/// Write $System.Status.GetErrorText(##class(isc.poi.Utils).fillBook("C:\InterSystems\poi\Test.xlsx"))
+ClassMethod fillBook(file As %String) As %Status
+{
+    #dim gateway as %Net.Remote.Gateway
+    #dim exception as %Exception.AbstractException
+
+    set sc = $$$OK
+    try {
+        set gateway = ..connect()
+        set sheet = 0
+        
+        set cells = ##class(%ListOfDataTypes).%New()
+        do cells.Insert("A7" _ $c(1) _ 123)
+        do cells.Insert("A9" _ $c(1) _ 123.45)
+        do cells.Insert("A8" _ $c(1) _ "ПРИВЕТ")
+        
+        set result = ##class(isc.poi.Main).fillBook(gateway, file, file _ ".new.xlsx", sheet, cells)
+        
+        write result
+  
+        set sc = gateway.%Disconnect()
+
+    } catch ex {
+	    break
+        set sc = $$$ADDSC($g(%objlasterror), ex.AsStatus())
     }
 
     quit sc
 }
 
 }
-
