@@ -5,6 +5,9 @@ Class isc.poi.Utils
 /// Main class to import
 Parameter CLASS = "isc.poi.Main";
 
+/// Main class to import
+Parameter CLASSBOOK = "isc.poi.WorkbookUtils";
+
 /// Gateway name to create/use
 Parameter GATEWAY = "POI";
 
@@ -72,11 +75,12 @@ ClassMethod updateJar(gatewayName = {..#GATEWAY}, path As %String = {..getPath()
 	set gateway = ..connect(gatewayName, path, .sc)
 	quit:$$$ISERR(sc) sc
 	
-	set sc = gateway.%Import(..#CLASS)
-	//set:$system["ed-pc" sc = gateway.%Import(..#CLASSTEST)
-	quit:$$$ISERR(sc) sc
-	set:'##class(%Dictionary.CompiledClass).%ExistsId(..#CLASS) sc = $$$ERROR($$$GeneralError, $$$FormatText("Class '%1' does not exist",..#CLASS))
-	
+	for class = ..#CLASS,..#CLASSBOOK {
+		set sc = gateway.%Import(class)
+		//set:$system["ed-pc" sc = gateway.%Import(..#CLASSTEST)
+		quit:$$$ISERR(sc)
+		set:'##class(%Dictionary.CompiledClass).%ExistsId(class) sc = $$$ERROR($$$GeneralError, $$$FormatText("Class '%1' does not exist",class))
+	}
 	quit sc
 }
 
