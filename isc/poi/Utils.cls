@@ -17,7 +17,7 @@ Parameter DIR As COSEXPRESSION = "$g(^POI(""DIR""))";
 
 /// Library files to load
 /// poi.jar should be first
-Parameter LIBS = {$lb("poi.jar", "poi-3.17.jar","poi-ooxml-3.17.jar", "poi-ooxml-schemas-3.17.jar", $lb("ooxml-lib", "xmlbeans-2.6.0.jar"), $lb("lib","commons-collections4-4.1.jar"))};
+Parameter LIBS = {$lb("poi.jar", "poi-5.2.2.jar","poi-ooxml-5.2.2.jar", "poi-ooxml-full-5.2.2.jar", $lb("ooxml-lib", "xmlbeans-5.0.3.jar"), $lb("ooxml-lib", "commons-compress-1.21.jar"), $lb("lib","commons-collections4-4.4.jar"),$lb("lib","commons-io-2.11.0.jar"),$lb("lib","log4j-api-2.17.2.jar"))};
 
 /// Test class in poi.jar
 Parameter CLASSTEST = "isc.poi.Test";
